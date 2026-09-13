@@ -12,12 +12,16 @@ class EnvironmentConfig {
   ///   --dart-define=API_BASE_URL=http://127.0.0.1:8000/v1
   /// - Android emulator: default below (10.0.2.2 routes to the host PC).
   /// - Physical device: --dart-define=API_BASE_URL=http://<PC-LAN-IP>:8000/v1
+  /// - PRODUCTION (Render): build with
+  ///   --dart-define=API_BASE_URL=https://onionsetu.onrender.com/v1
+  ///   which is also the prod fallback below, so release builds can never
+  ///   silently point at localhost.
   static String get apiBaseUrl {
     switch (environment) {
       case AppEnvironment.prod:
         return const String.fromEnvironment(
           'API_BASE_URL',
-          defaultValue: 'https://api.onionsetu.org/v1',
+          defaultValue: 'https://onionsetu.onrender.com/v1',
         );
       case AppEnvironment.test:
         return const String.fromEnvironment(
