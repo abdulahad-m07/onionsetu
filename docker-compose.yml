@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: onionsetu_db
+    environment:
+      POSTGRES_DB: onionsetu_db
+      POSTGRES_USER: onionsetu_admin
+      POSTGRES_PASSWORD: secure_postgres_password_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onionsetu_admin -d onionsetu_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: onionsetu_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Local gitignored .env supplies provider keys (OPENROUTER_API_KEY,
+    # ROBOFLOW_API_KEY). Explicit `environment` entries below take
+    # precedence over env_file, so container networking/auth stay intact.
+    env_file:
+      - .env
+    environment:
+      ENVIRONMENT: dev
+      DATABASE_URL: postgresql+asyncpg://onionsetu_admin:secure_postgres_password_dev@postgres:5432/onionsetu_db
+      JWT_SECRET_KEY: dev_jwt_secret_key_onionsetu_2026
+      ACCESS_TOKEN_EXPIRE_MINUTES: 120
+      SUPABASE_URL: https://mock-onionsetu.supabase.co
+      SUPABASE_KEY: mock-key
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./static:/app/static
+
+volumes:
+  postgres_data:

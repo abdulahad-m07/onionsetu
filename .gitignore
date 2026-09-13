@@ -1,0 +1,29 @@
+# Local / secret files — never commit.
+.env
+backend/.env
+*.db
+*.db-journal
+*.log
+*.apk
+*.aab
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Flutter / Dart
+frontend/build/
+frontend/.dart_tool/
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/app/build/
+frontend/ios/Pods/
+
+# Deploy CLIs
+.vercel
+
+# Editors
+.idea/
+.vscode/

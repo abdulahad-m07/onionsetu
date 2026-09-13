@@ -1,0 +1,11 @@
+# Never bake local secrets or junk into the image.
+.env
+backend/.env
+**/__pycache__/
+**/*.py[cod]
+.venv/
+.pytest_cache/
+frontend/
+*.db
+.git/
+.idea/
