@@ -15,7 +15,10 @@ COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ /app/backend/
-COPY static/ /app/static/
+# NOTE: no COPY of root static/ — git does not preserve that directory
+# (it only held untracked E2E report artifacts) and the backend recreates
+# ./static/<bucket>/ at runtime via os.makedirs(exist_ok=True) in
+# supabase_storage_service.py. Nothing reads baked-in static assets.
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
